@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+.scrollDesign{
+  scrollbar-width: thin;
+  scrollbar-color: #4020c1 #ffffff ;
+    max-height: 100%;
+    scrollbar-gutter: stable;
+    scroll-behavior: smooth;
+}
