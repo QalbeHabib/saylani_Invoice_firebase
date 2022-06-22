@@ -23,7 +23,9 @@ export default function Invoice() {
   const deleteInvoice = () => {
     dispatch({ type: "DELETE_ALERT", payload: { show: true, id: state._id } });
   };
-  const editInvoice = () => {
+  const editInvoice = (fireData) => {
+    // console.log(fireData);
+    navigate("", { state: fireData });
     dispatch({
       type: "EDIT_INVOICE",
       payload: { drawer: true, obj: data, id: state._id },
@@ -101,7 +103,7 @@ export default function Invoice() {
               </div>
               <div className="text-white md:flex  space-x-0 space-y-3 md:space-y-0 md:space-x-2">
                 <div
-                  onClick={() => editInvoice()}
+                  onClick={() => editInvoice(state)}
                   className="px-5 py-1 border border-green-400 rounded-full font-bold transition hover:bg-green-400 hover:border-white  hover:scale-105 cursor-pointer"
                 >
                   Edit

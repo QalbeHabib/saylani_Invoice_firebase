@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { validationSchema } from "../Components/ValidationSchema";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useLocation } from "react-router-dom";
 
 const DatePickerField = ({ ...props }) => {
   const { setFieldValue } = useFormikContext();
@@ -34,6 +35,9 @@ const DatePickerField = ({ ...props }) => {
   );
 };
 export default function EditInvoice() {
+  const { state } = useLocation();
+  console.log("habib", state);
+
   const inputStyle =
     "mt-1 bg-[#1f213a] text-white focus:ring-[#1f213a] focus:border-white block w-full shadow-sm sm:text-sm border-[#1f213a] rounded-sm py-2 px-3 ";
   const labelStyle = "block text-sm font-medium text-[#bcbcc5]";
@@ -82,26 +86,26 @@ export default function EditInvoice() {
     };
   } else {
     var initialValues = {
-      invoiceNumber: data.invoiceNumber,
-      bill_from_street_address: data.bill_from_street_address,
-      bill_from_city: data.bill_from_city,
-      bill_from_post_code: data.bill_from_post_code,
-      bill_from_country: data.bill_from_country,
-      bill_to_client_name: data.bill_to_client_name,
-      bill_to_client_email: data.bill_to_client_email,
-      bill_to_client_address: data.bill_to_client_address,
-      bill_to_client_city: data.bill_to_client_city,
-      bill_to_client_post_code: data.bill_to_client_post_code,
-      bill_to_client_country: data.bill_to_client_country,
-      bill_to_client_invoice_date: data.bill_to_client_invoice_date,
-      bill_to_client_payment_terms: data.bill_to_client_payment_terms,
-      bill_to_client_project_description:
-        data.bill_to_client_project_description,
-      invoice_status: "Pending",
-      items: data.items,
+      // invoiceNumber: state.invoiceNumber,
+      // bill_from_street_address: state.bill_from_street_address,
+      // bill_from_city: state.bill_from_city,
+      // bill_from_post_code: state.bill_from_post_code,
+      // bill_from_country: state.bill_from_country,
+      // bill_to_client_name: state.bill_to_client_name,
+      // bill_to_client_email: state.bill_to_client_email,
+      // bill_to_client_address: state.bill_to_client_address,
+      // bill_to_client_city: state.bill_to_client_city,
+      // bill_to_client_post_code: state.bill_to_client_post_code,
+      // bill_to_client_country: state.bill_to_client_country,
+      // bill_to_client_invoice_date: state.bill_to_client_invoice_date,
+      // bill_to_client_payment_terms: state.bill_to_client_payment_terms,
+      // bill_to_client_project_description:
+      //   state.bill_to_client_project_description,
+      // invoice_status: "Pending",
+      // items: state.items,
     };
   }
-
+  // console.log("=>", state.invoiceNumber);
   return (
     <>
       <Transition.Root show={value.users.edit} as={Fragment}>
@@ -131,25 +135,25 @@ export default function EditInvoice() {
                   leaveTo="-translate-x-full"
                 >
                   <Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
-                    <div className="flex h-full flex-col overflow-y-scroll bg-[#141625] shadow-xl">
+                    <div className="flex items-start justify-end bg-[#141625]">
+                      {/* Close Icon */}
+                      <div>
+                        <button
+                          type="button"
+                          className="m-2 px-2 text-gray-400 hover:text-gray-500"
+                          onClick={() => hideModel()}
+                        >
+                          <span className="sr-only">Close panel</span>
+                          <XIcon className="h-6 w-6" />
+                        </button>
+                      </div>
+                      {/* Close Icon */}
+                    </div>
+                    <div className="bg-[#141625] text-2xl text-white font-bold text-center pb-5 capitalize">
+                      Edit the Invoice
+                    </div>
+                    <div className="flex h-full flex-col overflow-y-scroll scrollDesign bg-[#141625] shadow-xl pb-24">
                       <div className="">
-                        <div className="flex items-start justify-between">
-                          <Dialog.Title className="text-lg font-medium text-gray-900">
-                            {" "}
-                            Shopping cart{" "}
-                          </Dialog.Title>
-                          <div className="ml-3 flex h-7 items-center">
-                            <button
-                              type="button"
-                              className="-m-2 p-2 text-gray-400 hover:text-gray-500"
-                              onClick={() => hideModel()}
-                            >
-                              <span className="sr-only">Close panel</span>
-                              <XIcon className="h-6 w-6" aria-hidden="true" />
-                            </button>
-                          </div>
-                        </div>
-
                         <div className="mt-10 sm:mt-0">
                           <div className="">
                             <div className="mt-5 md:mt-0 md:col-span-2">
@@ -503,14 +507,14 @@ export default function EditInvoice() {
                                             ) : null}
                                           </div>
 
-                                          <div className="col-span-6">
+                                          <div className="col-span-6 text-xl text-white">
                                             Items
                                           </div>
                                         </div>
 
                                         <div>
                                           {" "}
-                                          <FieldA v rray name="items">
+                                          <FieldArray name="items">
                                             {({ insert, remove, push }) => (
                                               <div>
                                                 {values.items.length > 0 &&
