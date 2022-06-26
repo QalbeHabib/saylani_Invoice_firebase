@@ -3,30 +3,27 @@ import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationIcon } from "@heroicons/react/outline";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
+
 export default function Delete() {
   const cancelButtonRef = useRef(null);
   const dispatch = useDispatch();
   const value = useSelector((state) => state);
+  const deleteId = useSelector((state) => state.users.deleteId);
   const navigate = useNavigate();
+
+  // console.log(deleteId);
 
   const hideModel = () => {
     dispatch({ type: "DELETE_ALERT", payload: { show: false, id: "" } });
   };
   // console.log(value.users.deleteId);
-  const deleteRequest = async (id) => {
-    const response = await fetch(
-      `http://localhost:4000/invoice/delete/${value.users.deleteId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
+  const deleteRequest = () => {
+    console.log("delete request", deleteId);
+    deleteDoc(doc(db, "Invoices", deleteId));
     navigate("/");
     hideModel();
-    return data;
   };
 
   return (

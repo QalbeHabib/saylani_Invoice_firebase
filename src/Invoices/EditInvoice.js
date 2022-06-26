@@ -15,7 +15,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { validationSchema } from "../Components/ValidationSchema";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 
 const DatePickerField = ({ ...props }) => {
   const { setFieldValue } = useFormikContext();
@@ -35,8 +38,10 @@ const DatePickerField = ({ ...props }) => {
   );
 };
 export default function EditInvoice() {
-  const { state } = useLocation();
-  console.log("habib", state);
+  const navigate = useNavigate();
+
+  const state = useSelector((state) => state.users.editObj);
+  // console.log("=>>", state);
 
   const inputStyle =
     "mt-1 bg-[#1f213a] text-white focus:ring-[#1f213a] focus:border-white block w-full shadow-sm sm:text-sm border-[#1f213a] rounded-sm py-2 px-3 ";
@@ -44,13 +49,25 @@ export default function EditInvoice() {
   const dispatch = useDispatch();
   const value = useSelector((state) => state);
   const data = value.users.editObj;
-  // console.log(value)
+  const InvoiceId = value.users.invoiceObj.id;
+
   const hideModel = () => {
     dispatch({ type: "EDIT_INVOICE", payload: { drawer: false, obj: data } });
   };
 
   const postData = async (values) => {
-    console.log("values", values);
+    console.log("==>", values);
+
+    let updateId = doc(db, "Invoices", InvoiceId);
+    updateDoc(updateId, values)
+      .then(() => {
+        alert("==> Data updated successfully");
+        navigate("/");
+        // navigate(`/invoice/view/${values.invoiceNumber}`);
+      })
+      .catch(() => {
+        alert("==> Error updating Invoices");
+      });
 
     dispatch({
       type: "EDIT_INVOICE",
@@ -86,23 +103,23 @@ export default function EditInvoice() {
     };
   } else {
     var initialValues = {
-      // invoiceNumber: state.invoiceNumber,
-      // bill_from_street_address: state.bill_from_street_address,
-      // bill_from_city: state.bill_from_city,
-      // bill_from_post_code: state.bill_from_post_code,
-      // bill_from_country: state.bill_from_country,
-      // bill_to_client_name: state.bill_to_client_name,
-      // bill_to_client_email: state.bill_to_client_email,
-      // bill_to_client_address: state.bill_to_client_address,
-      // bill_to_client_city: state.bill_to_client_city,
-      // bill_to_client_post_code: state.bill_to_client_post_code,
-      // bill_to_client_country: state.bill_to_client_country,
+      invoiceNumber: state.invoiceNumber,
+      bill_from_street_address: state.bill_from_street_address,
+      bill_from_city: state.bill_from_city,
+      bill_from_post_code: state.bill_from_post_code,
+      bill_from_country: state.bill_from_country,
+      bill_to_client_name: state.bill_to_client_name,
+      bill_to_client_email: state.bill_to_client_email,
+      bill_to_client_address: state.bill_to_client_address,
+      bill_to_client_city: state.bill_to_client_city,
+      bill_to_client_post_code: state.bill_to_client_post_code,
+      bill_to_client_country: state.bill_to_client_country,
       // bill_to_client_invoice_date: state.bill_to_client_invoice_date,
-      // bill_to_client_payment_terms: state.bill_to_client_payment_terms,
-      // bill_to_client_project_description:
-      //   state.bill_to_client_project_description,
-      // invoice_status: "Pending",
-      // items: state.items,
+      bill_to_client_payment_terms: state.bill_to_client_payment_terms,
+      bill_to_client_project_description:
+        state.bill_to_client_project_description,
+      invoice_status: "Pending",
+      items: state.items,
     };
   }
   // console.log("=>", state.invoiceNumber);
@@ -517,8 +534,8 @@ export default function EditInvoice() {
                                           <FieldArray name="items">
                                             {({ insert, remove, push }) => (
                                               <div>
-                                                {values.items.length > 0 &&
-                                                  values.items.map(
+                                                {state.items.length > 0 &&
+                                                  state.items.map(
                                                     (friend, index) => (
                                                       <div
                                                         key={index}
@@ -599,10 +616,10 @@ export default function EditInvoice() {
                                                             </label>
 
                                                             <p className="text-white font-bold pt-2">
-                                                              {values.items[
+                                                              {state.items[
                                                                 index
                                                               ].qty *
-                                                                values.items[
+                                                                state.items[
                                                                   index
                                                                 ].price}
                                                             </p>

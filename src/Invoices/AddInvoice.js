@@ -71,7 +71,8 @@ export default function AddInvoice() {
     try {
       console.log(initialValues);
       const result = await addDoc(collection(db, "Invoices"), initialValues);
-      console.log("habib is here", result);
+      // console.log("habib is here", result);
+      dispatch({ type: "RE_FETCH", payload: { status: true } });
       notify();
       hideModel();
     } catch (error) {

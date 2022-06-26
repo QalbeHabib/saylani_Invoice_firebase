@@ -3,9 +3,11 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import "../App.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { doc, deleteDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 
 export default function Invoice() {
-  const { state } = useLocation();
+  // const { state } = useLocation();
   // const { value } = state;
   // console.log("haib is my name ", state);
 
@@ -14,21 +16,25 @@ export default function Invoice() {
   const [effect, setEffect] = useState();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const obj = useSelector((state) => state);
-  if (obj) {
-    // var set = obj.users.editObj.invoice_status
-  } else {
-    var set = "";
-  }
+  const state = useSelector((state) => state.users.invoiceObj);
+  const InvoiceId = useSelector((state) => state.users.invoiceObj.id);
+  const refresh = useSelector((state) => state.users.refresh);
+  console.log("Refreshing Invoice", refresh);
   const deleteInvoice = () => {
-    dispatch({ type: "DELETE_ALERT", payload: { show: true, id: state._id } });
+    // console.log(InvoiceId);WW
+    dispatch({
+      type: "DELETE_ALERT",
+      payload: { show: true, id: InvoiceId },
+    });
+    // delete: action.payload.show,
+    // deleteId: action.payload.id,
   };
-  const editInvoice = (fireData) => {
-    // console.log(fireData);
-    navigate("", { state: fireData });
+  const editInvoice = () => {
+    console.log("Invoice ID =>", InvoiceId);
+
     dispatch({
       type: "EDIT_INVOICE",
-      payload: { drawer: true, obj: data, id: state._id },
+      payload: { drawer: true, obj: state, id: state._id },
     });
   };
 
@@ -51,33 +57,7 @@ export default function Invoice() {
     items: data.items,
   };
 
-  // useEffect(() => {
-  //   axios
-  //     .post("http://localhost:4000/invoice/get/" + state._id)
-  //     .then((response) => {
-  //       setData(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error", error);
-  //     });
-  //   // setPaid()
-  // }, [effect, initialValues]);
-
-  const setPaid = async () => {
-    const response = await fetch(
-      `http://localhost:4000/invoice/update/${data._id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(initialValues),
-      }
-    );
-    // dispatch({type:"EDIT_INVOICE",payload:{drawer:true,obj:values}})
-    // navigate(`/invoice/view/${data.invoiceNumber}`);
-    return console.log(response);
-  };
+  const setPaid = async () => {};
   if (state.items) {
     var sum = state.items.reduce((accumulator, object) => {
       return accumulator + object.qty * object.price;
@@ -149,21 +129,19 @@ export default function Invoice() {
                 <div className="  text-[12px] ">
                   <p className=" font-bold text-blue-600">Invoice Date</p>
                   <p className="text-white text-[15px] font-bold">
-                    {new Date(state.bill_to_client_invoice_date.seconds * 1000)
-                      .toLocaleDateString()
-                      .slice(0, 10)}
+                    {state.bill_to_client_invoice_date.seconds}
                   </p>
                   <br />
                   <br />
                   <p className=" font-bold text-blue-600">Payment Due</p>
                   <p className="text-white text-[15px] font-bold">
-                    {state.bill_to_client_invoice_date.seconds
+                    {/* {state.bill_to_client_invoice_date.seconds
                       ? new Date(
                           state.bill_to_client_invoice_date.seconds * 1000
                         )
                           .toLocaleDateString()
                           .slice(0, 10)
-                      : null}
+                      : null} */}
                   </p>
                 </div>
                 <div className="  text-[12px] grid grid-cols-2 gap-3 col-span-2 ">

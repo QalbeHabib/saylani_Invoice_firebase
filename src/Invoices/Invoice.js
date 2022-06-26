@@ -14,10 +14,12 @@ export default function Invoice() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const obj = useSelector((state) => state.users.invoiceStatus);
-  const newObj = useSelector((state) => state);
-  var customInvoices = invoices;
+  const reducerInvoices = useSelector((state) => state.users.invoices);
+  const invoiceStatus = useSelector((state) => state.users.status);
+  const singleInvoice = useSelector((state) => state.users.invoiceObj);
 
-  // console.log("Obj", obj);
+  var customInvoices = invoices;
+  // console.log(status);
   useEffect(() => {
     const result = getDocs(collection(db, "Invoices")).then((res) => {
       setStatus(
@@ -25,9 +27,14 @@ export default function Invoice() {
           return { ...doc.data(), id: doc.id };
         })
       );
+      const data = res.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      });
+      dispatch({ type: "SET_INVOICE", payload: { invoices: data } });
+
       // console.log("habib => ", status);
     });
-  }, []);
+  }, [invoiceStatus]);
 
   const addInvoice = (value) => {
     dispatch({ type: "LOG_OUT", payload: { drawer: true, obj: {} } });
@@ -35,7 +42,11 @@ export default function Invoice() {
 
   const ShowInvoice = (value) => {
     // console.log(value);
-    navigate(`/invoice/view/${value.invoiceNumber}`, { state: value });
+    dispatch({
+      type: "SINGLE_INVOICE",
+      payload: { obj: value, refresh: true },
+    });
+    navigate(`/invoice/view/${value.invoiceNumber}`);
   };
 
   useEffect(() => {
@@ -85,7 +96,7 @@ export default function Invoice() {
               </div>
             </div>
           </div>
-          {status.map((value, index) => (
+          {reducerInvoices.map((value, index) => (
             <div
               onClick={() => ShowInvoice(value)}
               key={index}
